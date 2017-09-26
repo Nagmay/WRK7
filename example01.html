@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html class=''>
+
+<head>
+	<meta charset='UTF-8'>
+	<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css'>
+	<style>
+
+	</style>
+</head>
+
+<body>
+	
+	<div class="row">
+		<div class="columns small-12">
+			<h3>Posts</h3>
+			<p>Retrieve posts from:</p>
+			<div class="row">
+				<form>
+				<div class="columns small-10"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div></p>
+				<div class="columns small-2"><input type="submit" class="button" value="Get some" /></div> 
+				</form>
+			</div>
+			<div id="info"></div>
+			<ol><div id="content"></div></ol>
+			<div><a class="button hide" id="more">Get more...</a></div>
+		</div>
+	</div>	
+
+	
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+
+	<script>
+		$(document).ready(function() {
+			var i = 0;
+			
+			// get first
+			$("form").submit( function(){
+				$('#content').html(" ");
+				doit();
+				$('#more').removeClass('hide');
+				return false;
+			});
+			
+			// get more
+			$('#more').click( function(){
+				doit();
+				return false;
+			});
+			
+			// function to do the work
+			function doit(){
+				var site = $('#goto10').val();
+				$.getJSON(site + '/wp-json/wp/v2/posts/?offest=' + i, function (data, status, request) {
+					numPosts = request.getResponseHeader('x-wp-total');
+					$('#info').html(numPosts + " posts found");
+
+					$.each(data, function(i) {
+						$('#content').append( '<li>' + data[i].title.rendered + '</li>' );  
+					});
+
+				}).fail(function() {
+					alert(site + ' not found...');
+				});
+			}
+
+
+		});
+		//# sourceURL=pen.js
+	</script>
+</body>
+
+
+</html>

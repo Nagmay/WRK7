@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html class=''>
+
+<head>
+	<meta charset='UTF-8'>
+	<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css'>
+	<style>
+
+	</style>
+</head>
+
+<body>
+	
+	<div class="row">
+		<div class="columns small-12">
+			<h3>Posts by year</h3>
+			<p>Retrieve posts from:</p>
+			<div class="row">
+				<form>
+				<div class="columns small-10"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div></p>
+				<div class="columns small-2"><input type="submit" class="button" value="Get some" /></div> 
+				</form>
+			</div>
+			<div id="info"></div>
+			<ul><div id="content"></div></ul>
+		</div>
+	</div>	
+
+	
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+
+	<script>
+		$(document).ready(function() {
+			var i = 0;
+			var year = (new Date).getFullYear();
+			//$('#content').html(year);
+						
+			// get first
+			$("form").submit( function(){
+				$('#content').html(" ");
+				doit();
+				return false;
+			});
+			
+	
+			// function to do the work
+			function doit(){
+				var site = $('#goto10').val();
+				var url = site + '/wp-json/wp/v2/posts/?per_page=1&after=' + year + '-01-01T00:00:00&before=' + (year+1) + '-01-01T00:00:00';
+				//$('#content').html(url);
+				$.getJSON(url, function (data, status, request) {
+					numPosts = request.getResponseHeader('x-wp-total');
+					$('#content').append('<li>' + numPosts + "</li>");
+					
+					year -= 1;
+					i += 1;
+					
+					if(i<10){
+						doit();
+					}
+					
+					
+				}).fail(function() {
+					alert(site + ' not found...');
+				});
+			}
+
+
+		});
+		//# sourceURL=pen.js
+	</script>
+</body>
+
+
+</html>
