@@ -35,9 +35,21 @@
             
 			
 			$("form").submit( function(){
-				var site = $('#goto10').val();
-				$.getJSON(site + '/wp-json/wp/v2/posts', function (data, status, request) {
-					$('#content').html('Data from <a href="' + site + '/wp-json/wp/v2/posts">' + site + '/wp-json/wp/v2/posts</a>');	
+				var site = $('#goto10').val() + '/wp-json/wp/v2/posts';
+                
+                /* ajax long form
+                $.ajax({
+                    method: "GET",
+                    url: site,
+                    dataType: "json"
+                }).done(function( data ) {
+                    $('#content').html('Data from <a href="' + site + '/wp-json/wp/v2/posts">' + site + '/wp-json/wp/v2/posts</a>');	
+					$('#content').append('<xmp>' + JSON.stringify(data, null, 2) + '</xmp>');
+                }); */
+                
+                // getJSON shorthand
+				$.getJSON(site, function (data, status, request) {
+					$('#content').html('Data from <a href="' + site + '">' + site + '/wp-json/wp/v2/posts</a>');	
 					$('#content').append('<xmp>' + JSON.stringify(data, null, 2) + '</xmp>');	
 				}).fail(function() {
 					alert(site + ' not found...');
