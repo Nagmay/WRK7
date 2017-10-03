@@ -28,7 +28,7 @@
 	
 	<div class="row">
 		<div class="columns small-12">
-			<h3>Posts by year (smarter)</h3>
+			<h3>Media by year</h3>
 			<p>Retrieve posts from:</p>
 			<div class="row">
 				<form>
@@ -46,6 +46,7 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
 	<script>
         $(document).foundation();
+        
 		$(document).ready(function() {
 			var year, until;
 						
@@ -77,7 +78,7 @@
 			// function to do the work
 			function doit(){
 				var site = $('#goto10').val();
-				var url = site + '/wp-json/wp/v2/posts/?per_page=1&after=' + year + '-01-01T00:00:00&before=' + (year+1) + '-01-01T00:00:00';
+				var url = site + '/wp-json/wp/v2/media/?per_page=1&after=' + year + '-01-01T00:00:00&before=' + (year+1) + '-01-01T00:00:00';
 				//$('#content').html(url);
 				$.getJSON(url, function (data, status, request) {
 					numPosts = request.getResponseHeader('x-wp-total');

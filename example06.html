@@ -28,11 +28,15 @@
 	
 	<div class="row">
 		<div class="columns small-12">
-			<h3>Posts by year (smarter)</h3>
-			<p>Retrieve posts from:</p>
+			<h3>Custom post types</h3>
+            <p>Must include <strong>'show_in_rest' => true,</strong> in the register_post_type args. <a href="https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-rest-api-support-for-custom-content-types/">Learn more...</a></p>
 			<div class="row">
 				<form>
-				<div class="columns small-10"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div>
+                <div class="columns small-3">Custom post type:</div>
+                <div class="columns small-7"><input type="text" id="post_type" placeholder="your_post_type" /></div>
+                <div class="columns small-2"></div>
+                <div class="columns small-3">From:</div>
+                <div class="columns small-7"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div>
 				<div class="columns small-2"><input type="submit" class="button" value="Get some" /></div> 
 				</form>
 			</div>
@@ -46,6 +50,7 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
 	<script>
         $(document).foundation();
+        
 		$(document).ready(function() {
 			var year, until;
 						
@@ -56,13 +61,14 @@
                 
 				$('#content').html('<table><tr id="count"></tr><tr id="posts"></tr><tr id="years"></tr></table>');
 				
-				var site = $('#goto10').val();
-				var url = site + '/wp-json/wp/v2/posts?per_page=1&order=asc';
+				var post_type = $('#post_type').val();
+                var site = $('#goto10').val();
+				var url = site + '/wp-json/wp/v2/' + post_type + '?per_page=1&order=asc';
 				
 				$.getJSON(url, function (data, status, request) {
 						until =  data[0].date;
 						until = until.substring(0,4);
-						$('#info').html("Site started in " + until);
+						$('#info').html("Post type: '" + post_type + "' created in " + until);
 				 
 						// now run
 						doit();
@@ -76,8 +82,9 @@
 	
 			// function to do the work
 			function doit(){
-				var site = $('#goto10').val();
-				var url = site + '/wp-json/wp/v2/posts/?per_page=1&after=' + year + '-01-01T00:00:00&before=' + (year+1) + '-01-01T00:00:00';
+				var post_type = $('#post_type').val();
+                var site = $('#goto10').val();
+				var url = site + '/wp-json/wp/v2/' + post_type + '/?per_page=1&after=' + year + '-01-01T00:00:00&before=' + (year+1) + '-01-01T00:00:00';
 				//$('#content').html(url);
 				$.getJSON(url, function (data, status, request) {
 					numPosts = request.getResponseHeader('x-wp-total');

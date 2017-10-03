@@ -17,7 +17,7 @@
 			<p>Retrieve posts from:</p>
 			<div class="row">
 				<form>
-				<div class="columns small-10"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div></p>
+				<div class="columns small-10"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div>
 				<div class="columns small-2"><input type="submit" class="button" value="Get some" /></div> 
 				</form>
 			</div>
@@ -28,15 +28,17 @@
 
 	
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
-
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
 	<script>
+        $(document).foundation();
+        
 		$(document).ready(function() {
-			var i = 0;
-			var year = (new Date).getFullYear();
-			//$('#content').html(year);
-						
+			var i, year;
+            
 			// get first
 			$("form").submit( function(){
+                i = 0;
+			    year = (new Date).getFullYear();
 				$('#content').html(" ");
 				doit();
 				return false;
@@ -50,7 +52,7 @@
 				//$('#content').html(url);
 				$.getJSON(url, function (data, status, request) {
 					numPosts = request.getResponseHeader('x-wp-total');
-					$('#content').append('<li>' + numPosts + "</li>");
+					$('#content').append('<li>' + year + ": " + numPosts + "</li>");
 					
 					year -= 1;
 					i += 1;

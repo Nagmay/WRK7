@@ -17,7 +17,7 @@
 			<p>Retrieve posts data from:</p>
 			<div class="row">
 				<form>
-				<div class="columns small-10"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div></p>
+				<div class="columns small-10"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div>
 				<div class="columns small-2"><input type="submit" class="button" value="Get it" /></div> 
 				</form>
 			</div>
@@ -27,9 +27,12 @@
 
 	
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
-
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
 	<script>
+        $(document).foundation();
+        
 		$(document).ready(function() {
+            
 			
 			$("form").submit( function(){
 				var site = $('#goto10').val();
