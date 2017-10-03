@@ -34,10 +34,11 @@
         $(document).foundation();
         
 		$(document).ready(function() {
-			var i = 0;
+			var i;
 			
 			// get first
 			$("form").submit( function(){
+				i = 1;
 				$('#content').html(" ");
 				doit();
 				$('#more').removeClass('hide');
@@ -53,14 +54,14 @@
 			// function to do the work
 			function doit(){
 				var site = $('#goto10').val();
-				$.getJSON(site + '/wp-json/wp/v2/posts/?offest=' + i, function (data, status, request) {
+				$.getJSON(site + '/wp-json/wp/v2/posts/?page=' + i, function (data, status, request) {
 					numPosts = request.getResponseHeader('x-wp-total');
 					$('#info').html(numPosts + " posts found");
 
 					$.each(data, function(i) {
 						$('#content').append( '<li>' + data[i].title.rendered + '</li>' );  
 					});
-
+					i++;
 				}).fail(function() {
 					alert(site + ' not found...');
 				});
