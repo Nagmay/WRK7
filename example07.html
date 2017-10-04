@@ -50,9 +50,9 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
 	<script>
         $(document).foundation();
-        
+        	
 		$(document).ready(function() {
-			var year, until;
+			var year, until, site, post_type, url, numposts;
 						
 			// get first
 			$("form").submit( function(){
@@ -61,14 +61,14 @@
                 
 				$('#content').html('<table><tr id="count"></tr><tr id="posts"></tr><tr id="years"></tr></table>');
 				
-				var post_type = $('#post_type').val();
-                var site = $('#goto10').val();
-				var url = site + '/wp-json/wp/v2/' + post_type + '?per_page=1&order=asc';
+				post_type = $('#post_type').val();
+               	site = $('#goto10').val() + '/wp-json/wp/v2/';
+				url = site + post_type + '?per_page=1&order=asc';
 				
 				$.getJSON(url, function (data, status, request) {
 						until =  data[0].date;
 						until = until.substring(0,4);
-						$('#info').html("Post type: '" + post_type + "' created in " + until);
+						$('#info').html('<strong>looking up:</strong> <a href="' + url + '">' + url + '</a> <br/> Post type: ' + post_type + ' started in ' + until);
 				 
 						// now run
 						doit();
@@ -82,11 +82,8 @@
 	
 			// function to do the work
 			function doit(){
-				var post_type = $('#post_type').val();
-                var site = $('#goto10').val();
-				var url = site + '/wp-json/wp/v2/' + post_type + '/?per_page=1&after=' + year + '-01-01T00:00:00&before=' + (year+1) + '-01-01T00:00:00';
-				//$('#content').html(url);
-				$.getJSON(url, function (data, status, request) {
+				var year_url = url + '&after=' + year + '-01-01T00:00:00&before=' + (year+1) + '-01-01T00:00:00';
+				$.getJSON(year_url, function (data, status, request) {
 					numPosts = request.getResponseHeader('x-wp-total');
                     $('#count').prepend('<td><div>'+numPosts+'</div></td>')
 					$('#posts').prepend('<td valign="bottom"><div style="height:'+numPosts+'px;"></div></td>"');
@@ -98,7 +95,7 @@
 					}
 					
 				}).fail(function() {
-					alert(site + ' not found...');
+					alert(year_url + ' not found...');
 				});
 			}
             
