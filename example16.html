@@ -4,16 +4,15 @@
 <head>
 	<meta charset='UTF-8'>
 	<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css'>
-	<style>
-
-	</style>
+	<title>Example 16: POST Media with Auth</title>	
+	<style></style>
 </head>
 
 <body>
 	<div class="row">
 		<div class="columns small-12">
 			<h3>Media</h3>
-			<p>with authentication!</p>
+			<p><strong>Now with authentication!</strong></p>
 		</div>
 	</div>
 	<div class="row">
@@ -21,7 +20,7 @@
 			<form>
 				<div class="row">
 				<div class="columns small-4">Site:</div>
-				<div class="columns small-8"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div> 
+				<div class="columns small-8"><input type="text" id="site" placeholder="http://yoursite.edu" /></div> 
 			</div>
 			<div class="row">
 				<div class="columns small-4">User:</div>
@@ -32,8 +31,6 @@
 				<div class="columns small-8"><input type="password" id="pass" placeholder="" /></div> 
 			</div>
 	
-				
-				
 			<h4>Your post:</h4>
 			<div class="row">
 				<div class="columns small-4">Title:</div>
@@ -47,7 +44,6 @@
 				<div class="columns small-4">FIle:</div>
 				<div class="columns small-8"><input type="file" id="file"></div> 
 			</div>
-					
 				
 			<div class="row">
 				<div class="columns small-8 small-offset-4"><input type="submit" class="button expanded" value="POST it!" /></div> 
@@ -64,18 +60,20 @@
 	
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
-	<script>
-        $(document).foundation();
-        
+	<script>$(document).foundation();</script>
+    <script>
 		$(document).ready(function() {
 			var url, user, pass;
 			
-			// get first
+			// On form submit
 			$("form").submit( function(){
-				url = $('#goto10').val() + '/wp-json/wp/v2/media';
+				url = $('#site').val() + '/wp-json/wp/v2/media';
+				
+				// The auth credentials
 				user = $('#user').val()
 				pass = $('#pass').val()
 				
+				// Get data add to FormData object
 				var title = $('#title').val();
 				var alt_text = $('#alt_text').val();
 				var file = $( '#file' )[0].files[0];
@@ -86,30 +84,28 @@
 				formData.append( 'alt_text', alt_text );
 
 				$('#response').html( '<strong>POST:</strong> <a href="' + url + '">' + url + '</a>');
-				
+
+				// Ajax, well ... duh!			
 				$.ajax({
-						url: url,
-						method: 'POST',
-						crossDomain: true,
-						processData: false, // don't process into urlencoded content type
-						contentType: false, // don' send the default content type header
-						data: formData, // << here's all your form data!
-						beforeSend: function ( xhr ) {
-							xhr.setRequestHeader( 'Authorization', 'Basic ' + btoa( user + ':' + pass ) ); // encode 'username:password' in base 64
-						}
-				}).done( function( data, status, request) {
+					url: url,
+					method: 'POST',
+					crossDomain: true,
+					processData: false, // don't process into urlencoded content type
+					contentType: false, // don' send the default content type header
+					data: formData, // << here's all your form data!
+					beforeSend: function ( xhr ) {
+						xhr.setRequestHeader( 'Authorization', 'Basic ' + btoa( user + ':' + pass ) ); // encode 'username:password' in base 64
+					}
+				}).done( function( data, status, request) { // if success
 					$('#response').append('<xmp>' + JSON.stringify(data, null, 2) + '</xmp>');	
-				}).fail(function(error) {
-							alert( "Error: " +  JSON.stringify(error) );
+				}).fail(function(error) { // if fail
+					alert( "Error: " +  JSON.stringify(error) );
 				});	
 				
 				return false;
 			});
 
 		});
-		
 	</script>
 </body>
-
-
 </html>

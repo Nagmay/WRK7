@@ -4,16 +4,15 @@
 <head>
 	<meta charset='UTF-8'>
 	<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css'>
-	<style>
-
-	</style>
+	<title>Example 14: DELETE Post with Auth</title>	
+	<style></style>
 </head>
 
 <body>
 	<div class="row">
 		<div class="columns small-12">
 			<h3>Delete a post</h3>
-			<p>with authentication!</p>
+			<p><strong>Now with authentication!</strong></p>
 		</div>
 	</div>
 	<div class="row">
@@ -21,7 +20,7 @@
 			<form>
 				<div class="row">
 				<div class="columns small-4">Site:</div>
-				<div class="columns small-8"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div> 
+				<div class="columns small-8"><input type="text" id="site" placeholder="http://yoursite.edu" /></div> 
 			</div>
 			<div class="row">
 				<div class="columns small-4">User:</div>
@@ -32,7 +31,6 @@
 				<div class="columns small-8"><input type="password" id="pass" placeholder="" /></div> 
 			</div>
 	
-
 			<h4>Your post:</h4>
 			<div class="row">
 				<div class="columns small-4">Post ID:</div>
@@ -54,43 +52,43 @@
 	
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
-	<script>
-        $(document).foundation();
-        
+	<script>$(document).foundation();</script>
+    <script>
 		$(document).ready(function() {
 			var i, url, user, pass;
 			
-			// get first
+			// On form submit
 			$("form").submit( function(){
 				post_id = $('#post_id').val();
-				url = $('#goto10').val() + '/wp-json/wp/v2/posts/' + post_id;
+				url = $('#site').val() + '/wp-json/wp/v2/posts/' + post_id;
+				
+				// The auth credentials
 				user = $('#user').val()
 				pass = $('#pass').val()
 				
-				$('#response').html( '<strong>DELETE:</strong> <a href="' + url + '">' + url + '</a>');
+				$('#info').html( '<strong>DELETE:</strong> <a href="' + url + '">' + url + '</a>');
 				
+				// Ajax, well ... duh!			
 				$.ajax({
 						url: url,
-						method: 'DELETE', 
+						method: 'DELETE', // Goodbye!
 						crossDomain: true,
 						beforeSend: function ( xhr ) {
 							xhr.setRequestHeader( 'Authorization', 'Basic ' + btoa( user + ':' + pass ) ); // encode 'username:password' in base 64
 						}
-				}).done( function( data, status, request) {
+				}).done( function( data, status, request) { // if success
 					$('#response').append('<xmp>' + JSON.stringify(data, null, 2) + '</xmp>');	
-				}).fail(function(error) {
-							alert( "Error: " +  JSON.stringify(error) );
+				}).fail(function(error) { // if fail
+					alert( "Error: " +  JSON.stringify(error) );
 				});	
 				
+				// Prevent default form submit
 				return false;
 			});
-			
-
 
 		});
 		
 	</script>
+	
 </body>
-
-
 </html>

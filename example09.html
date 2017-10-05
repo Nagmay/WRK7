@@ -4,9 +4,8 @@
 <head>
 	<meta charset='UTF-8'>
 	<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css'>
-	<style>
-
-	</style>
+	<title>Example 09: GET Users</title>	
+	<style></style>
 </head>
 
 <body>
@@ -17,7 +16,7 @@
 			<p>Retrieve users from:</p>
 			<div class="row">
 				<form>
-				<div class="columns small-10"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div>
+				<div class="columns small-10"><input type="text" id="site" placeholder="http://yoursite.edu" /></div>
 				<div class="columns small-2"><input type="submit" class="button" value="GET some" /></div> 
 				</form>
 			</div>
@@ -30,40 +29,49 @@
 	
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
-	<script>
-        $(document).foundation();
-        
+	<script>$(document).foundation();</script>
+    <script>
 		$(document).ready(function() {
 			var i;
 			
-			// get first
+			// On form submit
 			$("form").submit( function(){
+				// Reset the output
 				i = 1;
 				$('#content').html(" ");
-				doit();
-				return false;
-			});
-			
-			// get more
-			$('#more').click( function(){
-				doit();
-				return false;
-			});
-			
-			// function to do the work
-			function doit(){
-				var site = $('#goto10').val() + '/wp-json/wp/v2/users/?page=' + i;
 				
+				// Do the work
+				call_the_api();
+				
+				// Prevent default form submit
+				return false;
+			});
+			
+			// On more
+			$('#more').click( function(){
+				call_the_api();
+				return false;
+			});
+			
+			// Function to do the work
+			function call_the_api(){
+				var site = $('#site').val() + '/wp-json/wp/v2/users/?page=' + i;
+				
+				// Ajax
 				$.getJSON(site, function (data, status, request) {
 					
+					// Display meta
 					$('#content').append('<strong>GET</strong> <a href="' + site + '">' + site + '</a> ');
-
+					
+					// Loop over data. Display useful info. 
 					$.each(data, function(i) {
 						$('#content').append( '<li>' + data[i].slug + '</li>' );  
 					});
+					
+					// Setup for more
 					i++;
-				}).fail(function(error) {
-					$('#content').append('<strong>GET</strong> <a href="' + site + '">' + site + '</a> ');
+				}).fail(function(error) { // if fail ... should fail if no auth!
+					$('#content').append('<strong>GET</strong> <a href="' + site + '">' + site + '</a></br>');
 					$('#content').append( JSON.stringify(error) );
 				});
 			}
@@ -71,7 +79,6 @@
 
 		});
 	</script>
+	
 </body>
-
-
 </html>

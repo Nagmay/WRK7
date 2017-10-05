@@ -4,6 +4,7 @@
 <head>
 	<meta charset='UTF-8'>
 	<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css'>
+	<title>Example 06: Comments by year</title>	
 	<style>
         #content table {
             width: auto;
@@ -32,7 +33,7 @@
 			<p>Retrieve posts from:</p>
 			<div class="row">
 				<form>
-				<div class="columns small-10"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div>
+				<div class="columns small-10"><input type="text" id="site" placeholder="http://yoursite.edu" /></div>
 				<div class="columns small-2"><input type="submit" class="button" value="GET some" /></div> 
 				</form>
 			</div>
@@ -44,51 +45,53 @@
 	
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
-	<script>
-        $(document).foundation();
-        
+	<script>$(document).foundation();</script>
+    <script>
 		$(document).ready(function() {
 			var year, until;
 						
-			// get first
+			// On form submit
 			$("form").submit( function(){
+				// Reset output
                 year = (new Date).getFullYear();
 			    until = year;
-                
 				$('#content').html('<table><tr id="count"></tr><tr id="posts"></tr><tr id="years"></tr></table>');
 				
-				var site = $('#goto10').val();
-				var url = site + '/wp-json/wp/v2/posts?per_page=1&order=asc';
-				
-				$.getJSON(url, function (data, status, request) {
+				// Ajax 1: How old is this site? 
+				var url = $('#site').val() + '/wp-json/wp/v2/posts?per_page=1&order=asc'; // Get only the first post
+				$.getJSON(url, function (data, status, request) { // if success
+						// Find the year of the first post
 						until =  data[0].date;
-						until = until.substring(0,4);
-				 
-						// now run
-						doit();
-					
-					}).fail(function() {
-						alert(site + ' not found...');
+						until = until.substring(0,4); 
+				 			
+						// Now... Do the work
+						call_the_api();
+				}).fail(function( error ) { // if fail
+					alert( "Error: " +  JSON.stringify(error) );
 				});
+				
+				// Prevent default form submit
 				return false;
 			});
 			
 	
-			// function to do the work
-			function doit(){
-				var url = $('#goto10').val() + '/wp-json/wp/v2/posts/?per_page=1&after=' + year + '-01-01T00:00:00&before=' + (year+1) + '-01-01T00:00:00';
+			// Function to do the work
+			function call_the_api(){
+				var url = $('#site').val() + '/wp-json/wp/v2/comments/?per_page=1&after=' + year + '-01-01T00:00:00&before=' + (year+1) + '-01-01T00:00:00';
+				
+				// Ajax 2: Get number of comments for each year
 				$.getJSON(url, function (data, status, request) {
 					$('#info').html( '<strong>GET:</strong> <a href="' + url + '">' + url + '</a>');
 					numPosts = request.getResponseHeader('x-wp-total');
                     $('#count').prepend('<td><div>'+numPosts+'</div></td>')
 					$('#posts').prepend('<td valign="bottom"><div style="height:'+numPosts+'px;"></div></td>"');
 					$('#years').prepend('<td><div>'+year+'<div></td>');
+					
+					// Keep going?
 					year -= 1;
-					
 					if(year >= until){
-						doit();
+						call_the_api();
 					}
-					
 				}).fail(function() {
 					alert(site + ' not found...');
 				});
@@ -96,7 +99,6 @@
             
 		});
 	</script>
+	
 </body>
-
-
 </html>

@@ -4,9 +4,8 @@
 <head>
 	<meta charset='UTF-8'>
 	<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css'>
-	<style>
-
-	</style>
+	<title>Example 04: Posts by year</title>	
+	<style></style>
 </head>
 
 <body>
@@ -17,7 +16,7 @@
 			<p>Retrieve posts from:</p>
 			<div class="row">
 				<form>
-				<div class="columns small-10"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div>
+				<div class="columns small-10"><input type="text" id="site" placeholder="http://yoursite.edu" /></div>
 				<div class="columns small-2"><input type="submit" class="button" value="GET some" /></div> 
 				</form>
 			</div>
@@ -29,46 +28,50 @@
 	
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
-	<script>
-        $(document).foundation();
-        
+	<script>$(document).foundation();</script>
+    <script>
 		$(document).ready(function() {
 			var i, year;
             
-			// get first
+			// On form submit
 			$("form").submit( function(){
-                i = 0;
+                // Reset output
+				i = 0;
 			    year = (new Date).getFullYear();
 				$('#content').html(" ");
-				doit();
+				
+				// Do the work
+				call_the_api();
+				
+				// Prevent default form submit
 				return false;
 			});
 			
 	
-			// function to do the work
-			function doit(){
-				var url = $('#goto10').val() + '/wp-json/wp/v2/posts/?per_page=1&after=' + year + '-01-01T00:00:00&before=' + (year+1) + '-01-01T00:00:00';
-				$.getJSON(url, function (data, status, request) {
+			// Function to do the work
+			function call_the_api(){
+				var url = $('#site').val() + '/wp-json/wp/v2/posts/?per_page=1&after=' + year + '-01-01T00:00:00&before=' + (year+1) + '-01-01T00:00:00';
+				
+				// Ajax
+				$.getJSON(url, function (data, status, request) { // if success
+					// Display meta about the call
 					$('#info').html( '<strong>GET:</strong> <a href="' + url + '">' + url + '</a>');
 					numPosts = request.getResponseHeader('x-wp-total');
 					$('#content').append('<li>' + year + ": " + numPosts + "</li>");
 					
+					// Keep going?
 					year -= 1;
 					i += 1;
-					
 					if(i<10){
-						doit();
+						call_the_api();
 					}
-					
-				}).fail(function() {
-					alert(site + ' not found...');
+				}).fail(function( error ) { // if fail
+					alert( "Error: " +  JSON.stringify(error) );
 				});
 			}
 
-
 		});
 	</script>
+	
 </body>
-
-
 </html>

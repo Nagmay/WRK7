@@ -4,16 +4,15 @@
 <head>
 	<meta charset='UTF-8'>
 	<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css'>
-	<style>
-
-	</style>
+	<title>Example 15: GET Users with Auth</title>	
+	<style></style>
 </head>
 
 <body>
 	<div class="row">
 		<div class="columns small-12">
 			<h3>Users</h3>
-			<p>with authentication!</p>
+			<p><strong>Now with authentication!</strong></p>
 			<p>Retrieve posts from:</p>
 		</div>
 	</div>
@@ -22,7 +21,7 @@
 			<form>
 			<div class="row">
 				<div class="columns small-4">Site:</div>
-				<div class="columns small-8"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div> 
+				<div class="columns small-8"><input type="text" id="site" placeholder="http://yoursite.edu" /></div> 
 			</div>
 			<div class="row">
 				<div class="columns small-4">User:</div>
@@ -47,44 +46,38 @@
 	
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
-	<script>
-
-		
-        $(document).foundation();
-        
+	<script>$(document).foundation();</script>
+    <script>
 		$(document).ready(function() {
 			
 			$("form").submit( function(){
+				var url = $('#site').val() + '/wp-json/wp/v2/users';
 				
-				var site = $('#goto10').val() + '/wp-json/wp/v2/users';
+				// The auth credentials
 				var user = $('#user').val()
 				var pass = $('#pass').val()
-
+				
+				// Ajax, well ... duh!			
 				$.ajax({
-						url: site,
-						method: 'GET',
-						crossDomain: true,
-						beforeSend: function ( xhr ) {
-							xhr.setRequestHeader( 'Authorization', 'Basic ' + btoa( user + ':' + pass ) ); // encode 'username:password' in base 64
-						}
-				}).done( function( data, status, request) {
-						$('#content').html('Data from <a href="' + site + '">' + site + '</a>');	
-						$('#content').append('<xmp>' + JSON.stringify(data, null, 2) + '</xmp>');	
-				}).fail(function(error) {
-							alert( "Error: " +  JSON.stringify(error) );
+					url: url,
+					method: 'GET',
+					crossDomain: true,
+					beforeSend: function ( xhr ) {
+						xhr.setRequestHeader( 'Authorization', 'Basic ' + btoa( user + ':' + pass ) ); // encode 'username:password' in base 64
+					}
+				}).done( function( data, status, request) { // if success
+					$('#content').html('Data from <a href="' + url + '">' + url + '</a>');	
+					$('#content').append('<xmp>' + JSON.stringify(data, null, 2) + '</xmp>');	
+				}).fail(function(error) { // if fail
+					alert( "Error: " +  JSON.stringify(error) );
 				});		
 								
 				return false;
 				
 			});
-			
 	
 		});
-		
-
-		
-		</script>
+	</script>
+	
 </body>
-
-
 </html>

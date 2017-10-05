@@ -4,9 +4,8 @@
 <head>
 	<meta charset='UTF-8'>
 	<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css'>
-	<style>
-
-	</style>
+	<title>Example 01: JSON</title>
+	<style></style>
 </head>
 
 <body>
@@ -17,27 +16,26 @@
 			<p>Retrieve posts data from:</p>
 			<div class="row">
 				<form>
-				<div class="columns small-10"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div>
+				<div class="columns small-10"><input type="text" id="site" placeholder="http://yoursite.edu" /></div>
 				<div class="columns small-2"><input type="submit" class="button" value="GET it" /></div> 
 				</form>
 			</div>
 			<div id="content"></div>
 		</div>
 	</div>	
-
 	
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
+	<script>$(document).foundation();</script>
 	<script>
-        $(document).foundation();
-        
 		$(document).ready(function() {
             
-			
+			// On form submit
 			$("form").submit( function(){
-				var site = $('#goto10').val() + '/wp-json/wp/v2/posts';
+				var site = $('#site').val() + '/wp-json/wp/v2/posts';
                 
-                /* ajax long form
+                /* 
+				// ajax long form
                 $.ajax({
                     method: "GET",
                     url: site,
@@ -45,22 +43,26 @@
                 }).done(function( data ) {
                     $('#content').html('Data from <a href="' + site + '/wp-json/wp/v2/posts">' + site + '/wp-json/wp/v2/posts</a>');	
 					$('#content').append('<xmp>' + JSON.stringify(data, null, 2) + '</xmp>');
-                }); */
+                }); 
+				*/
                 
-                // getJSON shorthand
-				$.getJSON(site, function (data, status, request) {
+                // getJSON Ajax shorthand
+				$.getJSON(site, function (data, status, request) { // if success
+					
+					// Display something
 					$('#content').html('GET <a href="' + site + '">' + site + '</a>');	
 					$('#content').append('<xmp>' + JSON.stringify(data, null, 2) + '</xmp>');	
-				}).fail(function() {
-					alert(site + ' not found...');
+					
+				}).fail(function( error ) { // if fail
+					alert( "Error: " +  JSON.stringify(error) );
 				});
 				
+				// Prevent default form submit
 				return false;
 			});
 
 		});
 	</script>
+	
 </body>
-
-
 </html>

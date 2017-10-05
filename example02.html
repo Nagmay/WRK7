@@ -4,9 +4,8 @@
 <head>
 	<meta charset='UTF-8'>
 	<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css'>
-	<style>
-
-	</style>
+	<title>Example 02: GET Posts</title>
+	<style></style>
 </head>
 
 <body>
@@ -17,62 +16,70 @@
 			<p>Retrieve posts from:</p>
 			<div class="row">
 				<form>
-				<div class="columns small-10"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div>
+				<div class="columns small-10"><input type="text" id="site" placeholder="http://yoursite.edu" /></div>
 				<div class="columns small-2"><input type="submit" class="button" value="GET some" /></div> 
 				</form>
 			</div>
 			<div id="info"></div>
 			<ol><div id="content"></div></ol>
-			<div><a class="button hide" id="more">Get more...</a></div>
+			<div><a class="button hide" id="more">GET more?</a></div>
 		</div>
 	</div>	
 
-	
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
-	<script>
-        $(document).foundation();
-        
+	<script>$(document).foundation();</script>
+    <script>
 		$(document).ready(function() {
 			var i;
 			
-			// get first
+			// On form submit
 			$("form").submit( function(){
+				// Reset output
 				i = 1;
 				$('#content').html(" ");
-				doit();
-				$('#more').removeClass('hide');
-				return false;
-			});
-			
-			// get more
-			$('#more').click( function(){
-				doit();
-				return false;
-			});
-			
-			// function to do the work
-			function doit(){
-				var site = $('#goto10').val() + '/wp-json/wp/v2/posts/?page=' + i;
 				
-				$.getJSON(site, function (data, status, request) {
+				// Do the work
+				call_the_api();
+				
+				// Prevent default form submit
+				return false;
+			});
+			
+			// On more
+			$('#more').click( function(){
+				call_the_api(); 
+				return false;
+			});
+			
+			// Function to do the work
+			function call_the_api(){
+				var site = $('#site').val() + '/wp-json/wp/v2/posts/?page=' + i;
+				
+				// Ajax 
+				$.getJSON(site, function (data, status, request) { // if success
+					
+					// Display meta about the call
 					numPosts = request.getResponseHeader('x-wp-total');
 					$('#info').html(numPosts + ' posts found');
 					$('#content').append('<strong>GET</strong> <a href="' + site + '">' + site + '</a>');
-
+					
+					// Loop over data. Display useful info. 
 					$.each(data, function(i) {
 						$('#content').append( '<li>' + data[i].title.rendered + '</li>' );  
 					});
+					
+					// Set up to get more
+					$('#more').removeClass('hide');
 					i++;
-				}).fail(function() {
-					alert(site + ' not found...');
+					
+				}).fail(function( error ) { // if fail
+					alert( "Error: " +  JSON.stringify(error) );
 				});
 			}
 
-
 		});
 	</script>
+	
 </body>
-
-
 </html>
