@@ -28,12 +28,12 @@
 	
 	<div class="row">
 		<div class="columns small-12">
-			<h3>Media by year</h3>
+			<h3>Posts by year (smarter)</h3>
 			<p>Retrieve posts from:</p>
 			<div class="row">
 				<form>
 				<div class="columns small-10"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div>
-				<div class="columns small-2"><input type="submit" class="button" value="Get some" /></div> 
+				<div class="columns small-2"><input type="submit" class="button" value="GET some" /></div> 
 				</form>
 			</div>
 			<div id="info"></div>
@@ -46,7 +46,6 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
 	<script>
         $(document).foundation();
-        
 		$(document).ready(function() {
 			var year, until;
 						
@@ -63,7 +62,6 @@
 				$.getJSON(url, function (data, status, request) {
 						until =  data[0].date;
 						until = until.substring(0,4);
-						$('#info').html("Site started in " + until);
 				 
 						// now run
 						doit();
@@ -77,10 +75,9 @@
 	
 			// function to do the work
 			function doit(){
-				var site = $('#goto10').val();
-				var url = site + '/wp-json/wp/v2/media/?per_page=1&after=' + year + '-01-01T00:00:00&before=' + (year+1) + '-01-01T00:00:00';
-				//$('#content').html(url);
+				var url = $('#goto10').val() + '/wp-json/wp/v2/posts/?per_page=1&after=' + year + '-01-01T00:00:00&before=' + (year+1) + '-01-01T00:00:00';
 				$.getJSON(url, function (data, status, request) {
+					$('#info').html( '<strong>GET:</strong> <a href="' + url + '">' + url + '</a>');
 					numPosts = request.getResponseHeader('x-wp-total');
                     $('#count').prepend('<td><div>'+numPosts+'</div></td>')
 					$('#posts').prepend('<td valign="bottom"><div style="height:'+numPosts+'px;"></div></td>"');

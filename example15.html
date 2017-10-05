@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html class=''>
+
+<head>
+	<meta charset='UTF-8'>
+	<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css'>
+	<style>
+
+	</style>
+</head>
+
+<body>
+	<div class="row">
+		<div class="columns small-12">
+			<h3>Users</h3>
+			<p>with authentication!</p>
+			<p>Retrieve posts from:</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="columns small-12 medium-6">
+			<form>
+			<div class="row">
+				<div class="columns small-4">Site:</div>
+				<div class="columns small-8"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div> 
+			</div>
+			<div class="row">
+				<div class="columns small-4">User:</div>
+				<div class="columns small-8"><input type="text" id="user" placeholder="" /></div> 
+			</div>
+			<div class="row">
+				<div class="columns small-4">Pass:</div>
+				<div class="columns small-8"><input type="password" id="pass" placeholder="" /></div> 
+			</div>
+			<div class="row">
+				<div class="columns small-8 small-offset-4"><input type="submit" class="button expanded" value="GET some" /></div> 
+			</div>
+			</form>
+		</div>
+		<div class="columns small-12 medium-6">
+			<div id="info"></div>
+			<ul><div id="content"></div></ul>
+			<div><a class="button hide" id="more">Get more...</a></div>
+		</div>
+	</div>	
+
+	
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
+	<script>
+
+		
+        $(document).foundation();
+        
+		$(document).ready(function() {
+			
+			$("form").submit( function(){
+				
+				var site = $('#goto10').val() + '/wp-json/wp/v2/users';
+				var user = $('#user').val()
+				var pass = $('#pass').val()
+
+				$.ajax({
+						url: site,
+						method: 'GET',
+						crossDomain: true,
+						beforeSend: function ( xhr ) {
+							xhr.setRequestHeader( 'Authorization', 'Basic ' + btoa( user + ':' + pass ) ); // encode 'username:password' in base 64
+						}
+				}).done( function( data, status, request) {
+						$('#content').html('Data from <a href="' + site + '">' + site + '</a>');	
+						$('#content').append('<xmp>' + JSON.stringify(data, null, 2) + '</xmp>');	
+				}).fail(function(error) {
+							alert( "Error: " +  JSON.stringify(error) );
+				});		
+								
+				return false;
+				
+			});
+			
+	
+		});
+		
+
+		
+		</script>
+</body>
+
+
+</html>

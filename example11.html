@@ -13,16 +13,29 @@
 	<div class="row">
 		<div class="columns small-12">
 			<h3>Explore Posts: Arguments</h3>
-			<p>Retrieve posts from:</p>
+			<p>with authentication!</p>
 		</div>
 	</div>
 	<div class="row">
 		<div class="columns small-12 medium-6">
 			<form>
-			<div class="row">
-				<div class="columns small-10 medium-8"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div>
-				<div class="columns small-2 medium-4"><input type="submit" class="button expanded" value="GET some" /></div> 
+				<div class="row">
+				<div class="columns small-4">Site:</div>
+				<div class="columns small-8"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div> 
 			</div>
+			<div class="row">
+				<div class="columns small-4">User:</div>
+				<div class="columns small-8"><input type="text" id="user" placeholder="" /></div> 
+			</div>
+			<div class="row">
+				<div class="columns small-4">Pass:</div>
+				<div class="columns small-8"><input type="password" id="pass" placeholder="" /></div> 
+			</div>
+			<div class="row">
+				<div class="columns small-8 small-offset-4"><input type="submit" class="button expanded" value="GET some" /></div> 
+			</div>
+				
+				
 			<h4>Refine:</h4>
 			<div class="row">
 				<div class="columns small-4">page</div>
@@ -136,7 +149,7 @@
         $(document).foundation();
         
 		$(document).ready(function() {
-			var i;
+			var i, url, user, pass;
 			
 			// get first
 			$("form").submit( function(){
@@ -155,8 +168,9 @@
 			
 			// function to do the work
 			function doit(){
-				var site = $('#goto10').val();
-				var url = site + '/wp-json/wp/v2/posts/?page=' + i;
+				url = $('#goto10').val() + '/wp-json/wp/v2/posts/?page=' + i;
+				user = $('#user').val()
+				pass = $('#pass').val()
 				
 				//Refine
 				$('input.refine').each( function(){
@@ -165,23 +179,31 @@
 					}
 				});
 				
-				$('#content').append( '<strong>GET:</strong> <a href="' + url + '">' + url + '</a>');
+				$('#content').append( '<strong>looking up:</strong> <a href="' + url + '">' + url + '</a>');
 				
-				$.getJSON(url , function (data, status, request) {
+				$.ajax({
+						url: url,
+						method: 'GET',
+						crossDomain: true,
+						beforeSend: function ( xhr ) {
+							xhr.setRequestHeader( 'Authorization', 'Basic ' + btoa( user + ':' + pass ) ); // encode 'username:password' in base 64
+						}
+				}).done( function( data, status, request) {
 					numPosts = request.getResponseHeader('x-wp-total');
-					$('#info').html('<h5>' + numPosts + " posts found" + '</h5>');
-
+					$('#content').html('Data from <a href="' + url + '">' + url + '</a>');	
+					$('#content').append('<h5>' + numPosts + " posts found" + '</h5>');
 					$.each(data, function(i) {
-						$('#content').append( '<li>' + data[i].title.rendered + '</li>' );  
+						$('#content').append( '<li>' + data[i].title.rendered + ' [' + data[i].status + ']</li>' );  
 					});
 					i++;
-				}).fail(function() {
-					alert(site + ' not found...');
-				});
+				}).fail(function(error) {
+							alert( "Error: " +  JSON.stringify(error) );
+				});	
 			}
 
 
 		});
+		
 	</script>
 </body>
 

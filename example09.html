@@ -13,8 +13,8 @@
 	
 	<div class="row">
 		<div class="columns small-12">
-			<h3>Posts by year</h3>
-			<p>Retrieve posts from:</p>
+			<h3>Users</h3>
+			<p>Retrieve users from:</p>
 			<div class="row">
 				<form>
 				<div class="columns small-10"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div>
@@ -22,7 +22,8 @@
 				</form>
 			</div>
 			<div id="info"></div>
-			<ul><div id="content"></div></ul>
+			<ol><div id="content"></div></ol>
+			<div><a class="button hide" id="more">Get more...</a></div>
 		</div>
 	</div>	
 
@@ -33,35 +34,37 @@
         $(document).foundation();
         
 		$(document).ready(function() {
-			var i, year;
-            
+			var i;
+			
 			// get first
 			$("form").submit( function(){
-                i = 0;
-			    year = (new Date).getFullYear();
+				i = 1;
 				$('#content').html(" ");
 				doit();
 				return false;
 			});
 			
-	
+			// get more
+			$('#more').click( function(){
+				doit();
+				return false;
+			});
+			
 			// function to do the work
 			function doit(){
-				var url = $('#goto10').val() + '/wp-json/wp/v2/posts/?per_page=1&after=' + year + '-01-01T00:00:00&before=' + (year+1) + '-01-01T00:00:00';
-				$.getJSON(url, function (data, status, request) {
-					$('#info').html( '<strong>GET:</strong> <a href="' + url + '">' + url + '</a>');
-					numPosts = request.getResponseHeader('x-wp-total');
-					$('#content').append('<li>' + year + ": " + numPosts + "</li>");
+				var site = $('#goto10').val() + '/wp-json/wp/v2/users/?page=' + i;
+				
+				$.getJSON(site, function (data, status, request) {
 					
-					year -= 1;
-					i += 1;
-					
-					if(i<10){
-						doit();
-					}
-					
-				}).fail(function() {
-					alert(site + ' not found...');
+					$('#content').append('<strong>GET</strong> <a href="' + site + '">' + site + '</a> ');
+
+					$.each(data, function(i) {
+						$('#content').append( '<li>' + data[i].slug + '</li>' );  
+					});
+					i++;
+				}).fail(function(error) {
+					$('#content').append('<strong>GET</strong> <a href="' + site + '">' + site + '</a> ');
+					$('#content').append( JSON.stringify(error) );
 				});
 			}
 
