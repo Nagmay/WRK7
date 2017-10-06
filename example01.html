@@ -9,38 +9,32 @@
 </head>
 
 <body>
-
+	
 	<div class="row">
 		<div class="columns small-12">
 			<h3>JSON</h3>
 			<p>Retrieve posts data from:</p>
 			<div class="row">
 				<form>
-					<div class="columns small-10">
-						<input type="text" id="site" placeholder="http://yoursite.edu" />
-					</div>
-					<div class="columns small-2">
-						<input type="submit" class="button" value="GET it" />
-					</div>
+				<div class="columns small-10"><input type="text" id="site" placeholder="http://yoursite.edu" /></div>
+				<div class="columns small-2"><input type="submit" class="button" value="GET it" /></div> 
 				</form>
 			</div>
 			<div id="content"></div>
 		</div>
-	</div>
-
-	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
-	<script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
+	</div>	
+	
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
+	<script>$(document).foundation();</script>
 	<script>
-		$(document).foundation();
-	</script>
-	<script>
-		$(document).ready(function () {
-
+		$(document).ready(function() {
+            
 			// On form submit
-			$("form").submit(function () {
+			$("form").submit( function(){
 				var site = $('#site').val() + '/wp-json/wp/v2/posts';
-
-				/* 
+                
+                /* 
 				// ajax long form
                 $.ajax({
                     method: "GET",
@@ -51,25 +45,24 @@
 					$('#content').append('<xmp>' + JSON.stringify(data, null, 2) + '</xmp>');
                 }); 
 				*/
-
-				// getJSON Ajax shorthand
+                
+                // getJSON Ajax shorthand
 				$.getJSON(site, function (data, status, request) { // if success
-
+					
 					// Display something
-					$('#content').html('GET <a href="' + site + '">' + site + '</a>');
-					$('#content').append('<xmp>' + JSON.stringify(data, null, 2) + '</xmp>');
-
-				}).fail(function (error) { // if fail
-					alert("Error: " + JSON.stringify(error));
+					$('#content').html('GET <a href="' + site + '">' + site + '</a>');	
+					$('#content').append('<xmp>' + JSON.stringify(data, null, 2) + '</xmp>');	
+					
+				}).fail(function( error ) { // if fail
+					alert( "Error: " +  JSON.stringify(error) );
 				});
-
+				
 				// Prevent default form submit
 				return false;
 			});
 
 		});
 	</script>
-
+	
 </body>
-
 </html>

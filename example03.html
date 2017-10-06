@@ -4,6 +4,7 @@
 <head>
 	<meta charset='UTF-8'>
 	<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css'>
+	<title>Example 03: Posts with Arguments</title>	
 	<style></style>
 </head>
 
@@ -18,7 +19,7 @@
 		<div class="columns small-12 medium-6">
 			<form>
 			<div class="row">
-				<div class="columns small-10 medium-8"><input type="text" id="goto10" placeholder="http://yoursite.edu" /></div>
+				<div class="columns small-10 medium-8"><input type="text" id="site" placeholder="http://yoursite.edu" /></div>
 				<div class="columns small-2 medium-4"><input type="submit" class="button expanded" value="GET some" /></div> 
 			</div>
 			<h4>Refine:</h4>
@@ -137,7 +138,7 @@
 			
 			// Function to do the work
 			function call_the_api(){
-				url = $('#goto10').val() + '/wp-json/wp/v2/posts/?page=' + i;
+				url = $('#site').val() + '/wp-json/wp/v2/posts/?page=' + i;
 				
 				// Refine the API call
 				$('input.refine').each( function(){

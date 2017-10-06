@@ -4,24 +4,28 @@
 <head>
 	<meta charset='UTF-8'>
 	<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/css/foundation.min.css'>
-	<title>Example 10: Meta</title>	
+	<title>Example 10: Random Beer App</title>	
 	<style>
-        #content table {
-            width: auto;
-        }
-        #content table td{
-             padding: 0 !important;
-        }
-        #content table td div{
-            font-size: .75em;
-            text-align: center;
-            width: 3em;
-            margin-left:1px;
-        }
-        #posts td div{
-            height: 1px;
-            background-color:#ccc;
-        }
+		body:after{
+		  content: "beta";
+		  position: fixed;
+		  width: 80px;
+		  height: 25px;
+		  background: #EE8E4A;
+		  top: 7px;
+		  left: -20px;
+		  text-align: center;
+		  font-size: 13px;
+		  font-family: sans-serif;
+		  text-transform: uppercase;
+		  font-weight: bold;
+		  color: #fff;
+		  line-height: 27px;
+		  -ms-transform:rotate(-45deg);
+		  -webkit-transform:rotate(-45deg);
+		  transform:rotate(-45deg);
+		}
+		body{ margin-top:2em; }
 	</style>
 </head>
 
@@ -29,75 +33,54 @@
 	
 	<div class="row">
 		<div class="columns small-12">
-		<h3>Meta - NOT Working Yet</h3>
-            <p>Must include <strong>'show_in_rest' => true,</strong> in the register_post_type args. <a href="https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-rest-api-support-for-custom-content-types/">Learn more...</a></p>
+		<h3>Random Beer App</h3>
+			
+		<div class="callout secondary">
+			<h4 id="title">Your Beer Name</h4>
 			<div class="row">
-				<form>
-                <div class="columns small-3">Custom post type:</div>
-                <div class="columns small-7"><input type="text" id="post_type" placeholder="your_post_type" /></div>
-                <div class="columns small-2"></div>
-                <div class="columns small-3">From:</div>
-                <div class="columns small-7"><input type="text" id="site" placeholder="http://yoursite.edu" /></div>
-				<div class="columns small-2"><input type="submit" class="button" value="GET some" /></div> 
-				</form>
+				<div class="columns medium-5 medium-offset-1 small-11 small-offset-1">
+					<span id="abv">?</span> ABV <br>
+					<span id="ibu">?</span> IBU <br>
+					<span id="srm">?</span> SRM <br>
+					<a href="" id="link">Get the recipe &raquo;</a>
+				</div>
+				<div class="columns medium-6 small-12">
+					<h5>Style: <span id="style">?</span></h5>
+					<div id="style_excerpt"><p>Style excerpt... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum et cursus purus. Quisque quis risus et est mollis vulputate. Suspendisse faucibus eros risus, vitae hendrerit urna accumsan eu. Pellentesque quis urna auctor, tincidunt sem in, pretium nisl. Phasellus a lacus urna. Suspendisse potenti.</p></div>
+				</div>
 			</div>
-			<div id="info"></div>
-			<div id="content"></div>
+			
+		</div>
+		<a href="example10.html" class="button">Get me a new beer!</a>
 		</div>
 	</div>	
-
 	
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.0/js/foundation.min.js'></script>
 	<script>$(document).foundation();</script>
     <script>
 		$(document).ready(function() {
-			var year, until, site, post_type, url, numposts;
-						
-			// On form submit
-			$("form").submit( function(){
-                year = (new Date).getFullYear();
-			    until = year;
-                
-				$('#content').html('<table><tr id="count"></tr><tr id="posts"></tr><tr id="years"></tr></table>');
-				
-				post_type = $('#post_type').val();
-               	site = $('#site').val() + '/wp-json/wp/v2/';
-				url = site + post_type + '?per_page=1&order=asc';
-				
-				$.getJSON(url, function (data, status, request) {
-						until =  data[0].date;
-						until = until.substring(0,4);
-						$('#info').html('<strong>looking up:</strong> <a href="' + url + '">' + url + '</a> <br/> Post type: ' + post_type + ' started in ' + until);
-				 
-						// now run
-						call_the_api();
-					
-					}).fail(function() {
-						alert(site + ' not found...');
-				});
-				return false;
+			var url, title, abv, ibu, srm, style, style_excerpt, link;
+			
+			url = 'http://allgrain.beer/wp-json/wp/v2';
+		
+			// Ajax
+			$.getJSON(url, function (data, status, request) { // if success
+
+				// Do something
+
+			}).fail(function( error ) { // if fail
+				alert( "Error: " +  JSON.stringify(error) );
 			});
 			
-	
-			// Function to do the work
-			function call_the_api(){
-				var year_url = url + '&after=' + year + '-01-01T00:00:00&before=' + (year+1) + '-01-01T00:00:00';
-				$.getJSON(year_url, function (data, status, request) {
-					numPosts = request.getResponseHeader('x-wp-total');
-                    $('#count').prepend('<td><div>'+numPosts+'</div></td>')
-					$('#posts').prepend('<td valign="bottom"><div style="height:'+numPosts+'px;"></div></td>"');
-					$('#years').prepend('<td><div>'+year+'<div></td>');
-					year -= 1;
-					
-					if(year >= until){
-						call_the_api();
-					}
-					
-				}).fail(function( error ) { // if fail
-					alert( "Error: " +  JSON.stringify(error) );
-				});
-			}
+			// Display
+			$("#title").html(title);
+			$("#abv").html(abv);
+			$("#ibu").html(ibu);
+			$("#srm").html(srm);
+			$("#style").html(style);
+			$("#style_excerpt").html(style);
+			$("#link").html(style);
             
 		});
 	</script>
